@@ -1,0 +1,10 @@
+.TableWrapper {
+    margin: auto;
+    margin-block: 200px;
+    width: 50% !important;
+}
+
+th,
+td {
+    padding: 5px 16px !important;
+}
