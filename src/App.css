@@ -7,3 +7,8 @@ ul,
 li {
   list-style: none;
 }
+
+h1 {
+  margin-block-start: 150px;
+  text-align: center;
+}
