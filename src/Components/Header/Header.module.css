@@ -1,9 +1,15 @@
-.List {
+header {
     position: fixed;
-    display: flex;
-    justify-content: center;
     top: 0;
     width: 100%;
+    height: fit-content;
+    background-color:aqua;
+}
+
+.Container {
+    display: flex;
+    margin: auto;
+    width: 80%;
+    justify-content: space-between;
     height: 60px;
-    background-color: aqua;
 }

@@ -1,15 +1,14 @@
+import Search from "../Search/Search.component";
 import classes from "./Header.module.css";
 
 const Header = () => {
-  const { List } = classes;
+  const { Container } = classes;
 
   return (
     <header>
-      <ul className={List}>
-        <li>Item</li>
-        <li>Item</li>
-        <li>Item</li>
-      </ul>
+      <div className={Container}>
+        <Search />
+      </div>
     </header>
   );
 };

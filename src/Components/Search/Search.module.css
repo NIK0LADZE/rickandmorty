@@ -1,0 +1,58 @@
+.Wrapper {
+    position: relative;
+}
+
+.searchInput {
+    width: 300px;
+    margin-block-start: 8px;
+    height: 45px;
+}
+
+.searchResultList {
+    margin-block-start: 2px;
+    padding: 0;
+    padding-block: 5px;
+    max-height: 450px;
+    overflow-y: overlay;
+    background-color: #fff;
+    border: 1px solid rgb(216, 214, 214);
+    border-radius: 5px;
+}
+
+.searchResultList::-webkit-scrollbar {
+    width: 10px;
+}
+
+.searchResultList::-webkit-scrollbar-thumb {
+    background-color: rgb(206, 206, 169);
+    border-radius: 8px;
+}
+
+.searchResultList li a {
+    padding: 5px 8px;
+    display: block;
+    color: #000;
+    text-decoration: none;
+}
+
+.errorMessage {
+    text-align: center;
+}
+
+.searchResultList li:not(.errorMessage):hover {
+    background-color: rgb(206, 206, 169);
+    cursor: pointer;
+}
+
+.clearIcon {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 10px;
+    line-height: 40px;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.clearIcon:hover {
+    color: rgb(34, 129, 129);
+}
