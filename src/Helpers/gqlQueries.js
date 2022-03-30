@@ -15,6 +15,27 @@ export const CharactersQuery = gql`
   }
 `;
 
+export const SingleCharacterQuery = gql`
+  query GetSingleCharacter($id: ID!) {
+    character(id: $id) {
+      name
+      species
+      gender
+      location {
+        name
+      }
+      episode {
+        id
+        name
+        episode
+        air_date
+      }
+      status
+      created
+    }
+  }
+`;
+
 export const InfoQuery = gql`
   query GetInfo {
     characters {

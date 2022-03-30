@@ -1,0 +1,12 @@
+.Container {
+    margin: auto;
+    margin-block-start: 150px;
+    width: 50%;
+}
+
+.Container a {
+    display: block;
+    text-align: right;
+    font-weight: bold;
+    text-decoration: none;
+}
