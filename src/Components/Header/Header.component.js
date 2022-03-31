@@ -1,3 +1,4 @@
+import FBLogin from "../FBLogin/FBLogin.component";
 import Search from "../Search/Search.component";
 import classes from "./Header.module.css";
 
@@ -8,6 +9,7 @@ const Header = () => {
     <header>
       <div className={Container}>
         <Search />
+        <FBLogin />
       </div>
     </header>
   );

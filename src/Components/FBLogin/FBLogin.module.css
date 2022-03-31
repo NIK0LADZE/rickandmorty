@@ -1,0 +1,22 @@
+.FBButton {
+    margin-block-start: 8px;
+    padding: 10px 15px;
+    background-color: #1877F2;
+    font-size: 16px;
+    line-height: 10px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: none;
+    border: none;
+    border-radius: 5px;
+}
+
+.FBButton i {
+    margin-inline-end: 10px;
+    transform: translateY(1px);
+    font-size: 20px;
+}
+
+.LogoutBtn {
+    height: 70%;
+}
