@@ -14,11 +14,45 @@ import PaginationComponent from "../Pagination/Pagination.component";
 
 export default function CharactersList() {
   const { search } = useLocation();
+  const isLoggedIn = localStorage.getItem("fb_user");
   const query = new URLSearchParams(search);
   const page = Number(query.get("page")) || 1;
+
   const { data, loading, error } = useQuery(CharactersQuery, {
     variables: { page },
   });
+
+  const initLikedCharacters = localStorage.getItem("liked_characters")
+    ? JSON.parse(localStorage.getItem("liked_characters"))
+    : [];
+
+  const [likedCharacters, setLikedCharacters] =
+    React.useState(initLikedCharacters);
+
+  const handleAction = (id) => {
+    const likedCharacter = likedCharacters.find((charId) => charId === id);
+
+    if (!!isLoggedIn) {
+      if (!likedCharacter) {
+        setLikedCharacters([...likedCharacters, id]);
+        localStorage.setItem(
+          "liked_characters",
+          JSON.stringify([...likedCharacters, id])
+        );
+      } else {
+        const updatedLikedCharacters = likedCharacters.filter(
+          (charId) => charId !== id
+        );
+        setLikedCharacters(updatedLikedCharacters);
+        localStorage.setItem(
+          "liked_characters",
+          JSON.stringify(updatedLikedCharacters)
+        );
+      }
+    } else {
+      console.log(111111);
+    }
+  };
 
   const renderTable = (rows, totalCharCount) => {
     return (
@@ -31,6 +65,7 @@ export default function CharactersList() {
                 <TableCell>ID</TableCell>
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="right">Status</TableCell>
+                <TableCell align="right">Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -46,6 +81,9 @@ export default function CharactersList() {
                     <Link to={`character/${row.id}`}>{row.name}</Link>
                   </TableCell>
                   <TableCell align="right">{row.status}</TableCell>
+                  <TableCell align="right" onClick={() => handleAction(row.id)}>
+                    {!row.isLiked ? "Like" : "Unlike"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -55,8 +93,8 @@ export default function CharactersList() {
     );
   };
 
-  const createData = (id, name, status) => {
-    return { id, name, status };
+  const createData = (id, name, status, isLiked) => {
+    return { id, name, status, isLiked };
   };
 
   if (loading) return <h1>Loading...</h1>;
@@ -76,7 +114,8 @@ export default function CharactersList() {
 
     results.forEach((character) => {
       const { id, name, status } = character;
-      rows.push(createData(id, name, status));
+      const isLiked = likedCharacters.find((charId) => charId === id);
+      rows.push(createData(id, name, status, isLiked));
     });
 
     return (

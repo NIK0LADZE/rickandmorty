@@ -1,34 +1,16 @@
-import { useState } from "react";
 import FacebookLogin from "react-facebook-login";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  LoginDispatcher,
+  LogoutDispatcher,
+} from "../../Store/FBLogin/FBLogin.dispatcher";
 import classes from "./FBLogin.module.css";
 
 const FBLogin = () => {
-  const initState = localStorage.getItem("fb_user");
-  const [isLoggedIn, setIsLoggedIn] = useState(!!initState);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const isLoggedIn = useSelector((state) => state.LoginReducer.isLoggedIn);
+  const isLoggingOut = useSelector((state) => state.LoginReducer.isLoggingOut);
+  const dispatch = useDispatch();
   const { FBButton, LogoutBtn } = classes;
-
-  const logoutHandler = () => {
-    setIsLoggingOut(true);
-    localStorage.removeItem("fb_user");
-
-    try {
-      window.FB.logout(() => {
-        setIsLoggedIn(false);
-        setIsLoggingOut(false);
-      });
-    } catch (error) {
-      setIsLoggedIn(false);
-      setIsLoggingOut(false);
-    }
-  };
-
-  const responseFacebook = (response) => {
-    const { name } = response;
-
-    localStorage.setItem("fb_user", name);
-    setIsLoggedIn(true);
-  };
 
   return !isLoggedIn ? (
     <FacebookLogin
@@ -37,12 +19,12 @@ const FBLogin = () => {
       icon="fa-facebook"
       textButton="Login with Facebook"
       scope="public_profile"
-      callback={responseFacebook}
+      callback={(response) => dispatch(LoginDispatcher(response))}
     />
   ) : (
     <button
       className={`btn btn-danger mt-2 ${LogoutBtn}`}
-      onClick={logoutHandler}
+      onClick={() => dispatch(LogoutDispatcher())}
       disabled={isLoggingOut}
     >
       Logout
