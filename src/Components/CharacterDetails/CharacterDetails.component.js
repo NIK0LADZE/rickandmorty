@@ -12,9 +12,11 @@ import Modal from "../Modal/Modal.component";
 import classes from "./CharacterDetails.module.css";
 
 const CharacterDetails = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
-  const { Container } = classes;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [isInvalidFormat, setIsInvalidFormat] = useState(false);
+  const { Container, Image } = classes;
   const { data, loading, error } = useQuery(SingleCharacterQuery, {
     variables: { id },
   });
@@ -54,6 +56,23 @@ const CharacterDetails = () => {
     }
   };
 
+  const updateImageHandler = (e) => {
+    const source = e.target.files[0];
+
+    if (
+      source.type === "image/jpeg" ||
+      source.type === "image/jpg" ||
+      source.type === "image/png"
+    ) {
+      const newImageObj = e.target.files[0];
+      const newImageUrl = URL.createObjectURL(newImageObj);
+      setImageUrl(newImageUrl);
+      setIsInvalidFormat(false);
+    } else {
+      setIsInvalidFormat(true);
+    }
+  };
+
   if (loading) return <h1>Loading...</h1>;
 
   if (error) return <h1>Error</h1>;
@@ -62,6 +81,7 @@ const CharacterDetails = () => {
     const {
       character: {
         name,
+        image,
         species,
         gender,
         status,
@@ -81,6 +101,21 @@ const CharacterDetails = () => {
             <Modal setIsModalOpen={setIsModalOpen} />,
             portalTarget
           )}
+        <img className={Image} src={imageUrl ? imageUrl : image} alt={name} />
+        <label className="d-block text-center mb-3" htmlFor="ImageUpload">
+          Upload your own image:
+        </label>
+        <input
+          id="ImageUpload"
+          className="d-block mb-2 mx-auto"
+          type="file"
+          onChange={updateImageHandler}
+        />
+        {isInvalidFormat && (
+          <p className="text-center" style={{ color: "red" }}>
+            Invalid image format
+          </p>
+        )}
         <div className="d-flex justify-content-between">
           <p onClick={() => handleAction(id, name, status)}>
             {!isLiked ? "Like" : "Unlike"}

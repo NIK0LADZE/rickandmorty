@@ -40,7 +40,9 @@ const LikedCharactersList = () => {
             return (
               <tr key={id}>
                 <td>{id}</td>
-                <td>{name}</td>
+                <td>
+                  <Link to={`/character/${id}`}>{name}</Link>
+                </td>
                 <td>{status}</td>
                 <td className={Action} onClick={() => unlikeCharacter(id)}>
                   Unlike

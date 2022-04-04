@@ -14,3 +14,19 @@
     font-weight: bold;
     text-decoration: none;
 }
+
+.Container label {
+    position: relative;
+    inset-inline-start: -65px;
+}
+
+.Container button {
+    position: relative;
+    inset-inline-start: -115px;
+}
+
+.Image {
+    display: block;
+    margin: auto;
+    margin-block-end: 30px;
+}

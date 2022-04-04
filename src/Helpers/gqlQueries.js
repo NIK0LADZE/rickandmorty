@@ -19,6 +19,7 @@ export const SingleCharacterQuery = gql`
   query GetSingleCharacter($id: ID!) {
     character(id: $id) {
       name
+      image
       species
       gender
       location {
