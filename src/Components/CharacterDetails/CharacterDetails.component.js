@@ -31,16 +31,23 @@ const CharacterDetails = () => {
     (user) => user.name === currentUser
   )?.likedCharacters;
 
-  const isLiked = userLikedCharacters?.find((charId) => charId === id);
+  const isLiked = userLikedCharacters?.find(
+    (characterData) => characterData.id === id
+  );
 
-  const handleAction = () => {
-    const likedCharacter = userLikedCharacters?.find((charId) => charId === id);
+  const handleAction = (id, name, status) => {
+    const likedCharacter = userLikedCharacters?.find(
+      (characterData) => characterData.id === id
+    );
+    const characterData = { id, name, status };
 
     if (!likedCharacter) {
       if (!isLoggedIn) {
         setIsModalOpen(true);
       } else {
-        dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
+        dispatch(
+          likeCharacterDispatcher(currentUser, likedCharacters, characterData)
+        );
       }
     } else {
       dispatch(unlikeCharacterDispatcher(currentUser, likedCharacters, id));
@@ -75,7 +82,9 @@ const CharacterDetails = () => {
             portalTarget
           )}
         <div className="d-flex justify-content-between">
-          <p onClick={handleAction}>{!isLiked ? "Like" : "Unlike"}</p>
+          <p onClick={() => handleAction(id, name, status)}>
+            {!isLiked ? "Like" : "Unlike"}
+          </p>
           <Link to={"/"}>Back to home</Link>
         </div>
         <table className="table table-bordered">

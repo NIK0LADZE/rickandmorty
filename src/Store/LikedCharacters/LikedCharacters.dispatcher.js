@@ -1,7 +1,7 @@
 import { updateLikedCharactersAction } from "./LikedCharacters.action";
 
 export const likeCharacterDispatcher =
-  (currentUser, likedCharacters, id) => (dispatch) => {
+  (currentUser, likedCharacters, characterData) => (dispatch) => {
     const userDataIndex = likedCharacters.findIndex(
       (user) => user.name === currentUser
     );
@@ -9,12 +9,12 @@ export const likeCharacterDispatcher =
     let updatedLikedCharacters, updatedUserData;
 
     if (!userData) {
-      updatedUserData = { name: currentUser, likedCharacters: [id] };
+      updatedUserData = { name: currentUser, likedCharacters: [characterData] };
       updatedLikedCharacters = [...likedCharacters, updatedUserData];
     } else {
       updatedUserData = {
         name: currentUser,
-        likedCharacters: [...userData.likedCharacters, id],
+        likedCharacters: [...userData.likedCharacters, characterData],
       };
 
       likedCharacters[userDataIndex] = updatedUserData;
@@ -37,7 +37,7 @@ export const unlikeCharacterDispatcher =
     let updatedLikedCharacters, updatedUserLikedCharacters;
 
     updatedUserLikedCharacters = userData.likedCharacters.filter(
-      (charId) => charId !== id
+      (characterData) => characterData.id !== id
     );
 
     likedCharacters[userDataIndex] = {

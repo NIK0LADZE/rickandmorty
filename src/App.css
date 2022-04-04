@@ -12,3 +12,7 @@ h1 {
   margin-block-start: 150px;
   text-align: center;
 }
+
+a {
+  text-decoration: none;
+}

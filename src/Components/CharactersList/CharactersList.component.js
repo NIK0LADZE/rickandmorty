@@ -40,14 +40,19 @@ export default function CharactersList() {
     variables: { page },
   });
 
-  const handleAction = (id) => {
-    const likedCharacter = userLikedCharacters?.find((charId) => charId === id);
+  const handleAction = (id, name, status) => {
+    const likedCharacter = userLikedCharacters?.find(
+      (characterData) => characterData.id === id
+    );
+    const characterData = { id, name, status };
 
     if (!likedCharacter) {
       if (!isLoggedIn) {
         setIsModalOpen(true);
       } else {
-        dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
+        dispatch(
+          likeCharacterDispatcher(currentUser, likedCharacters, characterData)
+        );
       }
     } else {
       dispatch(unlikeCharacterDispatcher(currentUser, likedCharacters, id));
@@ -59,7 +64,18 @@ export default function CharactersList() {
 
     return (
       <React.Fragment>
-        <h6 className="text-end mb-3">Total Characters: {totalCharCount}</h6>
+        <div
+          className={`${
+            isLoggedIn ? "d-flex justify-content-between" : "d-block"
+          }`}
+        >
+          {isLoggedIn && (
+            <h6>
+              <Link to={"/my-liked-characters"}>List of liked characters</Link>
+            </h6>
+          )}
+          <h6 className="text-end mb-3">Total Characters: {totalCharCount}</h6>
+        </div>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -86,7 +102,7 @@ export default function CharactersList() {
                   <TableCell
                     align="right"
                     className={Action}
-                    onClick={() => handleAction(row.id)}
+                    onClick={() => handleAction(row.id, row.name, row.status)}
                   >
                     {!row.isLiked ? "Like" : "Unlike"}
                   </TableCell>
@@ -121,7 +137,9 @@ export default function CharactersList() {
 
     results.forEach((character) => {
       const { id, name, status } = character;
-      const isLiked = userLikedCharacters?.find((charId) => charId === id);
+      const isLiked = userLikedCharacters?.find(
+        (characterData) => characterData.id === id
+      );
       rows.push(createData(id, name, status, isLiked));
     });
 

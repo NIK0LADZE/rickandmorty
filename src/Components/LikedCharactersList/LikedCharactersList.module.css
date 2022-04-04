@@ -1,0 +1,17 @@
+.Container {
+    margin: auto;
+    margin-block-start: 150px;
+    width: 50%;
+}
+
+.Container a {
+    display: block;
+    margin-block-end: 1rem;
+    font-weight: bold;
+    text-align: right;
+    text-decoration: none;
+}
+
+.Action {
+    cursor: pointer;
+}
