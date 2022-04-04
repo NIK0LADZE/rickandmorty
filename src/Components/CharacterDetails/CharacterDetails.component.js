@@ -1,14 +1,51 @@
+import reactDom from "react-dom";
 import { useQuery } from "@apollo/client";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { SingleCharacterQuery } from "../../Helpers/gqlQueries";
+import {
+  likeCharacterDispatcher,
+  unlikeCharacterDispatcher,
+} from "../../Store/LikedCharacters/LikedCharacters.dispatcher";
+import Modal from "../Modal/Modal.component";
 import classes from "./CharacterDetails.module.css";
 
 const CharacterDetails = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { id } = useParams();
   const { Container } = classes;
   const { data, loading, error } = useQuery(SingleCharacterQuery, {
     variables: { id },
   });
+
+  const isLoggedIn = useSelector((state) => state.LoginReducer.isLoggedIn);
+  const currentUser = useSelector((state) => state.LoginReducer.currentUser);
+  const dispatch = useDispatch();
+
+  const likedCharacters = useSelector(
+    (state) => state.LikedCharactersReducer.likedCharacters
+  );
+
+  const userLikedCharacters = likedCharacters.find(
+    (user) => user.name === currentUser
+  )?.likedCharacters;
+
+  const isLiked = userLikedCharacters?.find((charId) => charId === id);
+
+  const handleAction = () => {
+    const likedCharacter = userLikedCharacters?.find((charId) => charId === id);
+
+    if (!likedCharacter) {
+      if (!isLoggedIn) {
+        setIsModalOpen(true);
+      } else {
+        dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
+      }
+    } else {
+      dispatch(unlikeCharacterDispatcher(currentUser, likedCharacters, id));
+    }
+  };
 
   if (loading) return <h1>Loading...</h1>;
 
@@ -28,10 +65,19 @@ const CharacterDetails = () => {
     } = data;
     const { length } = episodes;
     const formattedCreatedDate = new Date(created);
+    const portalTarget = document.getElementById("overlay");
 
     return (
       <div className={Container}>
-        <Link to={"/"}>Back to home</Link>
+        {isModalOpen &&
+          reactDom.createPortal(
+            <Modal setIsModalOpen={setIsModalOpen} />,
+            portalTarget
+          )}
+        <div className="d-flex justify-content-between">
+          <p onClick={handleAction}>{!isLiked ? "Like" : "Unlike"}</p>
+          <Link to={"/"}>Back to home</Link>
+        </div>
         <table className="table table-bordered">
           <tbody>
             <tr>

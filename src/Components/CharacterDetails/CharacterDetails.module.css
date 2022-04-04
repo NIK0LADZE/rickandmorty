@@ -4,9 +4,13 @@
     width: 50%;
 }
 
+.Container p {
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .Container a {
     display: block;
-    text-align: right;
     font-weight: bold;
     text-decoration: none;
 }

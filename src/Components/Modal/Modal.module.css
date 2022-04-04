@@ -1,0 +1,26 @@
+.Overlay {
+    position: absolute;
+    inset-block-start: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(57, 55, 72, 0.22);
+    z-index: 10;
+}
+
+.Modal {
+    position: relative;
+    padding: 20px;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 200px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.Modal button {
+    position: absolute;
+    inset-inline-end: 20px;
+    inset-block-end: 20px;
+}

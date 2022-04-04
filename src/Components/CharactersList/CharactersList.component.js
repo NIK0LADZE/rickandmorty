@@ -1,7 +1,9 @@
 import * as React from "react";
+import reactDom from "react-dom";
 import { useQuery } from "@apollo/client";
 import { CharactersQuery } from "../../Helpers/gqlQueries";
 import { Link, useLocation } from "react-router-dom";
+import Modal from "../Modal/Modal.component";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,15 +11,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import classes from "./CharactersList.module.css";
 import PaginationComponent from "../Pagination/Pagination.component";
 import { useDispatch, useSelector } from "react-redux";
 import {
   likeCharacterDispatcher,
   unlikeCharacterDispatcher,
 } from "../../Store/LikedCharacters/LikedCharacters.dispatcher";
+import classes from "./CharactersList.module.css";
 
 export default function CharactersList() {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const { search } = useLocation();
   const isLoggedIn = useSelector((state) => state.LoginReducer.isLoggedIn);
   const currentUser = useSelector((state) => state.LoginReducer.currentUser);
@@ -42,10 +45,10 @@ export default function CharactersList() {
 
     if (!likedCharacter) {
       if (!isLoggedIn) {
-        return alert("FAIL");
+        setIsModalOpen(true);
+      } else {
+        dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
       }
-
-      dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
     } else {
       dispatch(unlikeCharacterDispatcher(currentUser, likedCharacters, id));
     }
@@ -105,6 +108,7 @@ export default function CharactersList() {
   if (error) return <h1>Error</h1>;
 
   if (data) {
+    const portalTarget = document.getElementById("overlay");
     const { ContentWrapper } = classes;
     const {
       characters: {
@@ -122,10 +126,17 @@ export default function CharactersList() {
     });
 
     return (
-      <div className={ContentWrapper}>
-        {renderTable(rows, count)}
-        <PaginationComponent />
-      </div>
+      <>
+        {isModalOpen &&
+          reactDom.createPortal(
+            <Modal setIsModalOpen={setIsModalOpen} />,
+            portalTarget
+          )}
+        <div className={ContentWrapper}>
+          {renderTable(rows, count)}
+          <PaginationComponent />
+        </div>
+      </>
     );
   }
 }
