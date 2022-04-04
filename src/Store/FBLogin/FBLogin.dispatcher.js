@@ -8,7 +8,7 @@ export const LoginDispatcher = (response) => (dispatch) => {
   const { name } = response;
 
   localStorage.setItem("fb_user", name);
-  dispatch(handleLoginAction());
+  dispatch(handleLoginAction(name));
 };
 
 export const LogoutDispatcher = () => (dispatch) => {

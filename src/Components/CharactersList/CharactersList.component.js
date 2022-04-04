@@ -11,50 +11,49 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import classes from "./CharactersList.module.css";
 import PaginationComponent from "../Pagination/Pagination.component";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  likeCharacterDispatcher,
+  unlikeCharacterDispatcher,
+} from "../../Store/LikedCharacters/LikedCharacters.dispatcher";
 
 export default function CharactersList() {
   const { search } = useLocation();
-  const isLoggedIn = localStorage.getItem("fb_user");
+  const isLoggedIn = useSelector((state) => state.LoginReducer.isLoggedIn);
+  const currentUser = useSelector((state) => state.LoginReducer.currentUser);
+  const dispatch = useDispatch();
   const query = new URLSearchParams(search);
   const page = Number(query.get("page")) || 1;
+
+  const likedCharacters = useSelector(
+    (state) => state.LikedCharactersReducer.likedCharacters
+  );
+
+  const userLikedCharacters = likedCharacters.find(
+    (user) => user.name === currentUser
+  )?.likedCharacters;
 
   const { data, loading, error } = useQuery(CharactersQuery, {
     variables: { page },
   });
 
-  const initLikedCharacters = localStorage.getItem("liked_characters")
-    ? JSON.parse(localStorage.getItem("liked_characters"))
-    : [];
-
-  const [likedCharacters, setLikedCharacters] =
-    React.useState(initLikedCharacters);
-
   const handleAction = (id) => {
-    const likedCharacter = likedCharacters.find((charId) => charId === id);
+    const likedCharacter = userLikedCharacters?.find((charId) => charId === id);
 
-    if (!!isLoggedIn) {
-      if (!likedCharacter) {
-        setLikedCharacters([...likedCharacters, id]);
-        localStorage.setItem(
-          "liked_characters",
-          JSON.stringify([...likedCharacters, id])
-        );
-      } else {
-        const updatedLikedCharacters = likedCharacters.filter(
-          (charId) => charId !== id
-        );
-        setLikedCharacters(updatedLikedCharacters);
-        localStorage.setItem(
-          "liked_characters",
-          JSON.stringify(updatedLikedCharacters)
-        );
+    if (!likedCharacter) {
+      if (!isLoggedIn) {
+        return alert("FAIL");
       }
+
+      dispatch(likeCharacterDispatcher(currentUser, likedCharacters, id));
     } else {
-      console.log(111111);
+      dispatch(unlikeCharacterDispatcher(currentUser, likedCharacters, id));
     }
   };
 
   const renderTable = (rows, totalCharCount) => {
+    const { Action } = classes;
+
     return (
       <React.Fragment>
         <h6 className="text-end mb-3">Total Characters: {totalCharCount}</h6>
@@ -81,7 +80,11 @@ export default function CharactersList() {
                     <Link to={`character/${row.id}`}>{row.name}</Link>
                   </TableCell>
                   <TableCell align="right">{row.status}</TableCell>
-                  <TableCell align="right" onClick={() => handleAction(row.id)}>
+                  <TableCell
+                    align="right"
+                    className={Action}
+                    onClick={() => handleAction(row.id)}
+                  >
                     {!row.isLiked ? "Like" : "Unlike"}
                   </TableCell>
                 </TableRow>
@@ -114,7 +117,7 @@ export default function CharactersList() {
 
     results.forEach((character) => {
       const { id, name, status } = character;
-      const isLiked = likedCharacters.find((charId) => charId === id);
+      const isLiked = userLikedCharacters?.find((charId) => charId === id);
       rows.push(createData(id, name, status, isLiked));
     });
 
